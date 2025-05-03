@@ -1,0 +1,191 @@
+1 This command is basically used to seeing high load and want to identify which processes are consuming the most resources 
+
+   
+
+ > ps aux --sort=-%cpu | head -n 10 
+
+ > ps -eo pid,user,%mem,command --sort=-%mem | head -n 10 
+
+ 
+
+2 used to check the disk usage of files and directories in a human-readable format, providing a summary of the total disk space used. 
+
+ 
+
+ > du -sch     > du -sch <name_folder>* ===> this will show which file is taking high space in a perticular folders 
+
+ > du -ash ==> it will show all details of  
+
+ 
+
+3 The command you provided is used to find and delete files in a specific directory that have not been modified in the last 7 days. 
+
+ 
+
+ > find /log/propertyServicesBotUtilityBatch_* -mtime +7 -exec rm {} \; 
+
+ 
+
+4 Use the du command to find out which directories are consuming the most space. 
+
+  
+
+ > du -sh /* 2>/dev/null | sort –h 
+
+ 
+
+ > du -sh /log/* 
+
+ > du -sh /log/* | grep G 
+
+ > du -sh /log/mbapps/* 
+
+ > du -sh /log/mbapps/* |grep G 
+
+ > du -sh /log/mbapps/propertyServiceCRMApi/* |grep G 
+
+ 
+
+ 
+
+5 Remove Old Kernels 
+
+ 
+
+  If you are running a Linux system, old kernels can take up significant space. You can remove them using: 
+
+ 
+
+ @ For Debian/Ubuntu: 
+
+   
+
+ > apt-get autoremove --purge 
+
+ 
+
+ @ For Red Hat/CentOS: 
+
+   
+
+ > sudo package-cleanup --oldkernels --count=2 
+
+ 
+
+6  Manage Log Files : Truncate Large Log Files: If you have large log files, you can truncate them instead of deleting them: 
+
+ 
+
+ > truncate -s 0 /var/log/<your-log-file.log> 
+
+ 
+
+7 Clear System Cache: 
+
+   @ You can clear the system cache using the following command: 
+
+ 
+
+ > sync; echo 3 | sudo tee /proc/sys/vm/drop_caches 
+
+   
+
+  @ Clear User Cache: 
+
+ 
+
+ > su - username  
+
+ > rm -rf ~/.cache/*   
+
+ > rm -rf /home/username/.cache/*  this command is used to clear the cache without switching into any user while sitting as a root user. 
+
+ 
+
+ > rm -rf ~/.cache/mozilla/firefox/*  this command is used to clear the cache of any web browser. 
+
+ > rm -rf ~/.cache/google-chrome/*  this command is used to clear the cache of chrome browser. 
+
+ 
+
+8  Identify Problematic Processes: 
+
+ 
+
+  @ Look for processes in a 'D' state (uninterruptible sleep) using this command to find processes that may be causing high load. 
+
+ 
+
+      > ps aux | awk '$8 ~ /D/ { print $0 } 
+
+ 
+
+  @ (R), indicating they are actively using CPU resources. 
+
+ 
+
+      > ps aux | awk '$8 ~ /R/ { print $0 } 
+
+    
+
+  @ (S), meaning they are waiting for an event (like I/O) to occur but can be woken up. 
+
+ 
+
+      > ps aux | awk '$8 ~ /S/ { print $0 }  
+
+ 
+
+   @ (D), indicating they are waiting for I/O operations to complete and cannot be interrupted.     
+
+ 
+
+      > ps aux | awk '$8 ~ /D/ { print $0 }  
+
+ 
+
+   @ (T), meaning they have been stopped, usually by receiving a signal. 
+
+    
+
+      > ps aux | awk '$8 ~ /T/ { print $0 }  
+
+ 
+
+   @ (t), indicating they are being traced by another process (often used for debugging). 
+
+ 
+
+      > ps aux | awk '$8 ~ /t/ { print $0 }  
+
+ 
+
+    @ (Z), meaning they have completed execution but still have an entry in the process table, waiting for their parent process to read their exit status. 
+
+       
+
+      > ps aux | awk '$8 ~ /Z/ { print $0 }  
+
+ 
+
+9  Run ncdu in the directory you want to analyze: 
+
+      
+
+      > yum install ncdu 
+
+      > ncdu / 
+
+ 
+
+10 Agar aap har directory ke andar files ki sankhya dekhna chahte hain, toh aap ye command istemal kar sakte hain: 
+
+ 
+
+      > find /log -type d -exec sh -c 'echo "{}: $(find "{}" -maxdepth 1 -type f | wc -l) files"' \; 
+
+ 
+
+ 
+
+less mbprojectdetail.log-20250401.gz  | egrep "06:30|07:00" | awk '{print $1, $2, $3, $4}' 
